@@ -55,8 +55,14 @@ springdoc:
   swagger-ui:
     operations-sorter: alpha
     tags-sorter: alpha
-    path: /swagger-ui.html
+    path: /api-docs.html
     disable-swagger-default-url: true
     doc-expansion: none
   paths-to-match:
     - /api/v1/**
+
+  # JWT 설정
+member:
+  jwt:
+    secret: ${jwt.secret}
+    validTime: ${jwt.validTime}

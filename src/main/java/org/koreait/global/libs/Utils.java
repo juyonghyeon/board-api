@@ -67,4 +67,15 @@ public class Utils {
 
         return messages;
     }
+
+    public String getUrl(String url) {
+        String protocol = request.getScheme(); // http, https,ftp ....
+        String domain = request.getServerName();
+        int _port = request.getServerPort();
+        String port = List.of(80, 443).contains(_port) ? "":":"+_port;
+
+        return String.format("%s://%s%s%s%s", protocol, domain, port, request.getContextPath(), url);
+    }
+
+
 }

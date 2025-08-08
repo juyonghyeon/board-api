@@ -3,14 +3,20 @@ package org.koreait.member.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.koreait.member.constants.Authority;
+import org.koreait.member.entities.Member;
+import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.services.JoinService;
+import org.koreait.member.test.libs.MockMember;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.StringUtils;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -25,6 +31,9 @@ public class MemberControllerTest {
 
     @Autowired
     private ObjectMapper om;
+
+    @Autowired
+    private MemberUtil memberUtil;
 
     @Autowired
     private JoinService joinService;
@@ -75,10 +84,22 @@ public class MemberControllerTest {
                 .andReturn()
                 .getResponse().getContentAsString(); // 응답 body 데이터를 반환
 
-        // 회원전용, 관리자 전용 접근 테스트
-        mockMvc.perform(get("/api/v1/member/test1")
-                        .header("Authorization", "Bearer " + token))
-                .andDo(print());
+        assertTrue(StringUtils.hasText(token));
 
+
+
+        // 로그인한 회원정보 조회
+        mockMvc.perform(get("/api/v1/member")
+                        .header("Authorization", "Bearer " + token))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    @MockMember(authority = Authority.ADMIN)
+    void mockMemberTest() {
+        Member member = memberUtil.getMember();
+        System.out.printf("member:%s, isLogin:%s, isAdmin:%s%n", member, memberUtil.isLogin(), member.isAdmin());
     }
 }

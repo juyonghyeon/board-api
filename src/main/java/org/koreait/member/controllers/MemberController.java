@@ -7,7 +7,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.koreait.global.exceptions.BadRequestException;
 import org.koreait.global.libs.Utils;
+import org.koreait.member.entities.Member;
 import org.koreait.member.jwt.TokenService;
+import org.koreait.member.libs.MemberUtil;
 import org.koreait.member.services.JoinService;
 import org.koreait.member.validators.JoinValidator;
 import org.koreait.member.validators.TokenValidator;
@@ -21,10 +23,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/member")
 @Tag(name="회원 API", description = "회원 가입, 회원 인증 토큰 발급 기능 제공")
 public class MemberController {
+
     private final JoinValidator joinValidator;
     private final JoinService joinService;
     private final TokenValidator tokenValidator;
     private final TokenService tokenService;
+    private final MemberUtil memberUtil;
     private final Utils utils;
 
     @Operation(summary = "회원가입처리", method = "POST")
@@ -59,15 +63,18 @@ public class MemberController {
         return tokenService.create(form.getEmail());
     }
 
-    @PreAuthorize("isAuthenticated()") // 로그인시에만 접근 가능
-    @GetMapping("/test1")
-    public void test1() {
-        System.out.println("로그인시 접근 가능 - test1()");
-    }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
-    @GetMapping("/test2")
-    public void test2() {
-        System.out.println("관리자만 접근 가능 - test2()");
+    /**
+     * 로그인한 회원 정보 출력
+     *
+     * @return
+     */
+    @Operation(summary = "로그인 상태인 회원 정보를 조회", method = "GET")
+    @ApiResponse(responseCode = "200")
+    @GetMapping // GET /api/v1/member
+    @PreAuthorize("isAuthenticated()")
+    public Member myInfo() {
+        return memberUtil.getMember();
     }
+    
 }

@@ -19,8 +19,11 @@ public class CorsConfig {
         // config.setAllowCredentials(true); 브라우저가 Ajax, fetch 요청 시 쿠키·세션·Authorization 헤더 같은 인증 정보를 포함할 수 있도록
 
         source.registerCorsConfiguration("/api/v1/**", config);
+        source.registerCorsConfiguration("/file/**", config);
+
 
         return new CorsFilter(source);
     }
+
 }
 

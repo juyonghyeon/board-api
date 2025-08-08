@@ -33,10 +33,10 @@ public class MemberControllerTest {
     private ObjectMapper om;
 
     @Autowired
-    private MemberUtil memberUtil;
+    private JoinService joinService;
 
     @Autowired
-    private JoinService joinService;
+    private MemberUtil memberUtil;
 
     @Test
     @DisplayName("회원가입 컨트롤러 테스트")
@@ -100,6 +100,6 @@ public class MemberControllerTest {
     @MockMember(authority = Authority.ADMIN)
     void mockMemberTest() {
         Member member = memberUtil.getMember();
-        System.out.printf("member:%s, isLogin:%s, isAdmin:%s%n", member, memberUtil.isLogin(), member.isAdmin());
+        System.out.printf("member:%s, isLogin:%s, isAdmin:%s%n", member, memberUtil.isLogin(), memberUtil.isAdmin());
     }
 }

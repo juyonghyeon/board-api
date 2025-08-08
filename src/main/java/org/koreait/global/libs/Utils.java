@@ -18,11 +18,16 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class Utils {
-    private final HttpServletRequest request;
     private final MessageSource messageSource;
+    private final HttpServletRequest request;
     private final LocaleResolver localeResolver;
 
-    // 메세지를 코드로 조회
+    /**
+     * 메세지를 코드로 조회
+     *
+     * @param code
+     * @return
+     */
     public String getMessage(String code) {
         Locale locale = localeResolver.resolveLocale(request);
 
@@ -68,6 +73,11 @@ public class Utils {
         return messages;
     }
 
+    /**
+     * 전체 주소 : https://site123.com:3000/member/....
+     * @param url
+     * @return
+     */
     public String getUrl(String url) {
         String protocol = request.getScheme(); // http, https,ftp ....
         String domain = request.getServerName();
@@ -76,6 +86,4 @@ public class Utils {
 
         return String.format("%s://%s%s%s%s", protocol, domain, port, request.getContextPath(), url);
     }
-
-
 }
